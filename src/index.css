@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+:root.dark {
+  --bg: #0A0A0A;
+  --bg-card: #111111;
+  --bg-elevated: #1A1A1A;
+  --border: rgba(255, 255, 255, 0.08);
+
+  --text: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.62);
+  --text-subtle: rgba(255, 255, 255, 0.35);
+
+  --accent: #F5C518;
+  --accent-soft: rgba(245, 197, 24, 0.12);
+  --accent-border: rgba(245, 197, 24, 0.35);
+}
+
+:root.light {
+  --bg: #F6F1E7;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #EFE6D4;
+  --border: rgba(20, 20, 20, 0.12);
+
+  --text: #111111;
+  --text-muted: rgba(17, 17, 17, 0.68);
+  --text-subtle: rgba(17, 17, 17, 0.42);
+
+  --accent: #C99500;
+  --accent-soft: rgba(201, 149, 0, 0.14);
+  --accent-border: rgba(201, 149, 0, 0.35);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: #0A0A0A;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+  .theme-text {
+    color: var(--text);
+  }
+
+  .theme-muted {
+    color: var(--text-muted);
+  }
+
+  .theme-subtle {
+    color: var(--text-subtle);
+  }
+
+  .theme-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+  }
+
+  .theme-elevated {
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+  }
+
+  .bg-gold {
+    background-color: var(--accent);
+  }
+
+  .text-gold {
+    color: var(--accent);
+  }
+
+  .text-dark {
+    color: #0A0A0A;
+  }
+
+  .border-gold {
+    border-color: var(--accent-border);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #F5C518, #FFD740, #C99500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  :root.light .text-gradient {
+    background: linear-gradient(135deg, #7A5700, #C99500, #E0A900);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gold-glow {
+    box-shadow: 0 0 30px rgba(245, 197, 24, 0.2);
+  }
+
+  :root.light .gold-glow {
+    box-shadow: 0 10px 30px rgba(201, 149, 0, 0.22);
+  }
+}
