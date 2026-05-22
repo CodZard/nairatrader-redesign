@@ -1,5 +1,6 @@
+import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Star } from 'lucide-react'
+import { Star, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import payout1 from '../assets/payout1.webp'
 import payout2 from '../assets/payout2.webp'
@@ -18,6 +19,33 @@ const payouts = [
 ]
 
 export default function Testimonials() {
+  const [current, setCurrent] = useState(0)
+
+  const touchStartX = useRef<number | null>(null)
+
+  const prev = () => {
+    setCurrent((c) => (c - 1 + payouts.length) % payouts.length)
+  }
+
+  const next = () => {
+    setCurrent((c) => (c + 1) % payouts.length)
+  }
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current === null) return
+
+    const diff = touchStartX.current - e.changedTouches[0].clientX
+
+    if (diff > 40) next()
+    else if (diff < -40) prev()
+
+    touchStartX.current = null
+  }
+
   return (
     <section
       id="testimonials"
@@ -60,32 +88,117 @@ export default function Testimonials() {
           </p>
         </motion.div>
 
-        {/* Mobile Slider / Desktop Grid */}
-        <div className="-mx-4 sm:mx-0 mb-14 sm:mb-16">
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 overflow-x-auto sm:overflow-visible px-4 sm:px-0 pb-5 snap-x snap-mandatory scrollbar-hide">
+        {/* Mobile Slider */}
+        <div className="block sm:hidden mb-14 px-2">
+          <div
+            className="relative overflow-hidden rounded-2xl"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
 
-            {payouts.map((p, i) => (
-              <motion.div
-                key={p.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="min-w-[88%] sm:min-w-0 snap-center rounded-3xl overflow-hidden aspect-video flex items-center justify-center shrink-0 sm:shrink gold-glow"
-                style={{
-                  backgroundColor: 'var(--bg-elevated)',
-                  border: '1px solid var(--border)',
-                }}
-              >
-                <img
-                  src={p.img}
-                  alt={`Payout Certificate ${p.id}`}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-              </motion.div>
-            ))}
+            {/* Slider Track */}
+            <div
+              className="flex transition-transform duration-500 ease-out"
+              style={{
+                transform: `translateX(-${current * 100}%)`,
+              }}
+            >
+              {payouts.map((p) => (
+                <div
+                  key={p.id}
+                  className="min-w-full rounded-2xl overflow-hidden"
+                  style={{
+                    backgroundColor: 'var(--bg-elevated)',
+                    border: '1px solid var(--border)',
+                  }}
+                >
+                  <img
+                    src={p.img}
+                    alt={`Payout Certificate ${p.id}`}
+                    className="w-full h-[230px] object-contain bg-black"
+                  />
+                </div>
+              ))}
+            </div>
 
+            {/* Left Arrow */}
+            <button
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: 'rgba(0,0,0,0.55)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                color: '#fff',
+              }}
+              aria-label="Previous"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: 'rgba(0,0,0,0.55)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                color: '#fff',
+              }}
+              aria-label="Next"
+            >
+              <ChevronRight size={18} />
+            </button>
           </div>
+
+          {/* Dots */}
+          <div className="flex justify-center gap-2 mt-4">
+            {payouts.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className="w-2 h-2 rounded-full transition-all duration-300"
+                style={{
+                  backgroundColor:
+                    i === current
+                      ? '#facc15'
+                      : 'rgba(255,255,255,0.22)',
+                  transform:
+                    i === current
+                      ? 'scale(1.3)'
+                      : 'scale(1)',
+                }}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Grid */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-14 sm:mb-16">
+          {payouts.map((p, i) => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
+              className="rounded-3xl overflow-hidden gold-glow"
+              style={{
+                backgroundColor: 'var(--bg-elevated)',
+                border: '1px solid var(--border)',
+              }}
+            >
+              <img
+                src={p.img}
+                alt={`Payout Certificate ${p.id}`}
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                style={{
+                  aspectRatio: '16/10',
+                  display: 'block',
+                }}
+              />
+            </motion.div>
+          ))}
         </div>
 
         {/* Review Card */}
@@ -101,7 +214,6 @@ export default function Testimonials() {
           }}
         >
           <div className="flex flex-col items-center justify-center gap-3 mb-6">
-
             <div className="flex gap-1">
               {[...Array(5)].map((_, i) => (
                 <Star
